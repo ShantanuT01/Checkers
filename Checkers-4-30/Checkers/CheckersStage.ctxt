@@ -1,0 +1,20 @@
+#BlueJ class context
+comment0.target=CheckersStage
+comment1.params=client\ game\ piece
+comment1.target=CheckersStage(CheckersClient,\ Checkers,\ Piece)
+comment2.params=game\ piece
+comment2.target=CheckersStage(Checkers,\ Piece)
+comment3.params=
+comment3.target=void\ update()
+comment4.params=p\ piece
+comment4.target=void\ updatePiece(Point,\ Piece)
+comment4.text=\n\ \ Change\ the\ piece\ located\ a\ specified\ Point\n
+comment5.params=
+comment5.target=void\ reset()
+comment6.params=row\ col
+comment6.target=void\ click(int,\ int)
+comment7.params=p
+comment7.target=void\ clickFrom(Point)
+comment8.params=p
+comment8.target=void\ clickTo(Point)
+numComments=9
