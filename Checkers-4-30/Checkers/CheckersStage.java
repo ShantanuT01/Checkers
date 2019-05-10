@@ -151,7 +151,7 @@ public class CheckersStage extends Stage
         from = p;
         
         
-        if(game.getPiece(from).equals(myPiece)){
+        if(game.getPiece(from) == myPiece){
             System.out.println("From: " + p);
         board[p.getRow()][p.getCol()].setSelected(true);
         }
@@ -176,14 +176,42 @@ public class CheckersStage extends Stage
                 to = null;
                 return; 
             }
+            if(game.isLegalJump(move))
+        {
+            System.out.println("To: " + p);
+
+            board[to.getRow()][to.getCol()].setPiece(myPiece);
+            board[to.getRow()][to.getCol()].setSelected(false);
+            game.setPiece(board[to.getRow()][to.getCol()].getPiece(), to);
+
+            board[from.getRow()][from.getCol()].setPiece(null);
+            board[from.getRow()][from.getCol()].setSelected(false);
+            game.setPiece(null, from);
+            game.setPiece(null, game.getCapturedPiece(from,to));
+            Point c = game.getCapturedPiece(from,to);
+            board[c.getRow()][c.getCol()].setPiece(null);
+            game.nextPlayer();
+            from = null;
+            to = null;
+            if(myPiece.equals(Piece.BLACK)){
+                myPiece = Piece.WHITE;
+            }
+            else{
+                 myPiece = Piece.BLACK; 
+            }
+             return; 
+        }
         if(game.isLegalMove(move)){
             System.out.println("To: " + p);
 
             board[to.getRow()][to.getCol()].setPiece(myPiece);
             board[to.getRow()][to.getCol()].setSelected(false);
+            game.setPiece(board[to.getRow()][to.getCol()].getPiece(), to);
 
             board[from.getRow()][from.getCol()].setPiece(null);
             board[from.getRow()][from.getCol()].setSelected(false);
+            game.setPiece(null, from);
+            game.nextPlayer();
             from = null;
             to = null;
             if(myPiece.equals(Piece.BLACK)){
@@ -200,6 +228,7 @@ public class CheckersStage extends Stage
              to = null; 
              //board[to.getRow()][to.getCol()].setSelected(false);
         }
+        
         
     }
     

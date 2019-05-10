@@ -6,7 +6,7 @@ public class Checkers implements ICheckers
     //INSTANCE VARIABLES
     private Piece[][] board;
     private Piece currentPlayer;
-    
+
     //CONSTRUCTORS
     public Checkers()
     {
@@ -40,7 +40,7 @@ public class Checkers implements ICheckers
         board[7][4] = Piece.BLACK;
         board[7][6] = Piece.BLACK;
     }
-    
+
     //METHODS       
     /**
      *  Return the current turn holder's Piece, Piece.BLACK or Piece.WHITE
@@ -49,7 +49,7 @@ public class Checkers implements ICheckers
     {
         return currentPlayer;
     }
-    
+
     /**
      *  Setter for currentPlayer instance variable
      */
@@ -57,7 +57,7 @@ public class Checkers implements ICheckers
     {
         currentPlayer = piece;
     }
-    
+
     /**
      *  Change the currentPlayer
      *      Piece.BLACK -> Piece.WHITE
@@ -74,33 +74,78 @@ public class Checkers implements ICheckers
             setCurrentPlayer(Piece.WHITE);
         }
     }
+
     public boolean isLegalMove(Move move){
-      boolean a = board[move.getPiece().getRow()][move.getPiece().getCol()] != null;
-      Point from = move.getPiece();
-      Point to = move.getDestination(); 
+        boolean a = board[move.getPiece().getRow()][move.getPiece().getCol()] != null;
+        Point from = move.getPiece();
+        Point to = move.getDestination();
         if(getPiece(from) == null){return false; }
         if(getPiece(to) != null){return false; }
         if(board[from.getRow()][from.getCol()].equals(Piece.WHITE)){
             if(from.getRow() + 1 == to.getRow()){
                 if(checker(from.getCol(),to.getCol())){
-                    
-                     return true; 
+
+                    return true; 
                 }
             }
-        
+
         }
-         if(board[from.getRow()][from.getCol()].equals(Piece.BLACK)){
+        if(board[from.getRow()][from.getCol()].equals(Piece.BLACK)){
             if(from.getRow() - 1 == to.getRow()){
                 if((from.getCol() + 1 == to.getCol()) || from.getCol() - 1 == to.getCol()){
-                   
-                     return true; 
+
+                    return true; 
                 }
             }
-        
+
         }
         return false; 
+    }
+    
+    public Point getCapturedPiece(Point from, Point to)
+    {
+        
+            int row = (from.getRow()+to.getRow())/2;
+            int col = (from.getCol()+to.getCol())/2;
+            return new Point(row,col);
+            
+        
         
     }
+
+    public boolean isLegalJump(Move move)
+    {
+        Point from = move.getPiece();
+        Point to = move.getDestination();
+        if(getPiece(from) == null)
+        {
+            return false;
+        }
+        if(getPiece(to) != null)
+        {
+            return false;
+        }
+        if(board[from.getRow()][from.getCol()].equals(Piece.WHITE)){
+            if(from.getRow() + 2 == to.getRow()){
+                if(from.getCol() + 2 == to.getCol() || from.getCol() - 2 == to.getCol()){
+                    if(board[from.getRow() + 1][from.getCol() -1] != currentPlayer || board[from.getRow() + 1][from.getCol() + 1] != currentPlayer)
+                    return true; 
+                }
+            }
+
+        }
+        if(board[from.getRow()][from.getCol()].equals(Piece.BLACK)){
+            if(from.getRow() - 2 == to.getRow()){
+                if((from.getCol() + 2 == to.getCol()) || from.getCol() - 2 == to.getCol()){
+                    if(board[from.getRow() - 1][from.getCol() -1] != currentPlayer || board[from.getRow() - 1][from.getCol() + 1] != currentPlayer)
+                    return true; 
+                }
+            }
+
+        }
+        return false; 
+    }
+
     /**
      *  Return the piece that is on the board at the specified Point
      *      Piece.BLACK, Piece.WHITE, or Piece.ARROW
@@ -108,41 +153,40 @@ public class Checkers implements ICheckers
     public Piece getPiece(Point p)
     {
         if(p.getRow() < 8 && p.getCol() < 8 && p.getRow() > -1 && p.getCol() > -1)
-        return board[p.getRow()][p.getCol()];
+            return board[p.getRow()][p.getCol()];
         return null;
     }
-    
+
     public void setPiece(Piece piece, Point p)
     {
         board[p.getRow()][p.getCol()] = piece;
     }
+
     public boolean isGameOver(){
         return false; 
     }
+
     public Piece getWinner(){
         return null;  
     }
+
     /**
      *  Move the piece located at Point from to Point to
      */
     public void move(Point from, Point to)
     {
-       if(getPiece(from) != null){
-           return;
+        if(getPiece(from) != null){
+            return;
         }
         else if(getPiece(from).equals(currentPlayer)){
             Piece moved = board[from.getRow()][from.getCol()];
             setPiece(moved, to);
             board[from.getRow()][from.getCol()] = null; 
             nextPlayer();
-        
+
         }
-           
-        
-       
-       
     }
-    
+
     /**
      *  Return true if there is no piece at Point p
      */
@@ -150,7 +194,7 @@ public class Checkers implements ICheckers
     {
         return getPiece(p) == null;
     }
-    
+
     /**
      *  Return a List of the Points that contain pieces that match the specified piece (Piece.BLACK, Piece.WHITE)
      */
@@ -169,7 +213,7 @@ public class Checkers implements ICheckers
         }
         return list;
     }
-  
+
     /**
      *  Return a new instance of an Amazons object with the same state as *this* object
      *  The copy should contain all the same Pieces in all the same places and the same currentPlayer
@@ -178,6 +222,7 @@ public class Checkers implements ICheckers
     {
         return null;
     }
+
     private boolean checker(int a, int b){
         return a+1 == b || a-1 == b; 
     }
