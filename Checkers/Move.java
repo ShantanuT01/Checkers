@@ -6,12 +6,12 @@ public class Move
 	private Point arrow;		//Where the Arrow will be shot
 	
 	//CONSTRUCTORS
-    public Move(Point piece, Point destination, Point arrow) 
+    public Move(Point piece, Point destination) 
     {
     	//initialize instance variables
     	this.piece = piece;
     	this.destination = destination;
-    	this.arrow = arrow;
+    	
     }
     
     //METHODS
@@ -25,14 +25,11 @@ public class Move
     	return destination;
     }
     
-    public Point getArrow()
-    {
-    	return arrow;
-    }
+    
     
     public String toString()
     {
-    	return piece.toString() + " " + destination.toString() + " " + arrow.toString();
+    	return piece.toString() + " " + destination.toString();
     }
     
     /**
@@ -47,6 +44,6 @@ public class Move
     	
     	return piece.equals(m.getPiece()) 
     		&& destination.equals(m.getDestination())
-    		&& arrow.equals(m.getArrow());
+    ;
     }
 }

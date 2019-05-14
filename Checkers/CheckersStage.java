@@ -1,5 +1,5 @@
 import mayflower.*;
-
+import java.util.*;
 public class CheckersStage extends Stage
 {
     //INSTANCE VARIABLES
@@ -12,7 +12,7 @@ public class CheckersStage extends Stage
     private Point to;
     
     private Text turn;
-
+    
     //CONSTRUCTORS
     public CheckersStage(CheckersClient client, Checkers game, Piece piece) 
     {
@@ -21,10 +21,10 @@ public class CheckersStage extends Stage
         this.client = client;
         this.myPiece = piece;
         
-        int w = 50;
-        int h = 50;
+        int w = 75;
+        int h = 75;
         
-        board = new PieceActor[10][10];
+        board = new PieceActor[8][8];
         for(int r = 0; r < board.length; r++)
         {
             for(int c = 0; c < board[0].length; c++)
@@ -32,7 +32,7 @@ public class CheckersStage extends Stage
                 PieceActor actor = new PieceActor(r, c);
                 board[r][c] = actor;
                 actor.setPiece(game.getPiece(new Point(r, c)));
-                addActor(actor, c * w + 75, r * h + 75);
+                addActor(actor, c * w + 37, r * h + 37);
             }
         }
         
@@ -40,12 +40,42 @@ public class CheckersStage extends Stage
         
         //Display your color            
         turn = new Text("");
-        addActor(turn, 0, 0);
+        addActor(turn, 5, 610);
         
         //DoSomethingButton button = new DoSomethingButton(client);
         //addActor(button, 400, 600);
     }
-    
+    public CheckersStage(Checkers game, Piece piece) 
+    {
+        //initialize instance variables
+        this.game = game;
+        
+        this.myPiece = piece; 
+        
+        int w = 75;
+        int h = 75;
+        
+        board = new PieceActor[8][8];
+        for(int r = 0; r < board.length; r++)
+        {
+            for(int c = 0; c < board[0].length; c++)
+            {
+                PieceActor actor = new PieceActor(r, c);
+                board[r][c] = actor;
+                actor.setPiece(game.getPiece(new Point(r, c)));
+                addActor(actor, c * w + 37, r * h + 37);
+            }
+        }
+        
+        setBackground("img/background.png");
+        
+        //Display your color            
+        turn = new Text("");
+        addActor(turn, 5, 610);
+        
+        //DoSomethingButton button = new DoSomethingButton(client);
+        //addActor(button, 400, 600);
+    }
     //METHODS
     public void update()
     {
@@ -54,11 +84,11 @@ public class CheckersStage extends Stage
             //display game over!
             turn.setText("Game Over!");
             
-            if(game.getWinner() == null)
+            if(null == null)
             {
                 turn.setText("Tie Game!");
             }
-            else if(game.getWinner() == myPiece)
+            else if(null == myPiece)
             {
                 turn.setText("You win!");
             }
@@ -76,7 +106,8 @@ public class CheckersStage extends Stage
             }
             else
             {
-                turn.setText("Waiting for opponent...");
+               String color = myPiece == Piece.WHITE ? "black" : "white";
+                turn.setText("It is your turn! (You are " + color + ")");
             }
         }
         
@@ -113,49 +144,119 @@ public class CheckersStage extends Stage
             clickFrom(p);
         else if(null == to)
             clickTo(p);
-        else
-            clickArrow(p);
     }
     
     private void clickFrom(Point p)
     {   
         from = p;
         
-        System.out.println("From: " + p);
         
+        if(game.getPiece(from) == myPiece){
+            System.out.println("From: " + p);
         board[p.getRow()][p.getCol()].setSelected(true);
+        }
+        else{
+            from = null; 
+        }
     }
     
     private void clickTo(Point p)
     {
         to = p;
-        
-        System.out.println("To: " + p);
-        
-        board[to.getRow()][to.getCol()].setPiece(myPiece);
-        board[to.getRow()][to.getCol()].setSelected(true);
-        
-        board[from.getRow()][from.getCol()].setPiece(null);
-        board[from.getRow()][from.getCol()].setSelected(false);
-    }
-    
-    private void clickArrow(Point p)
-    {   
-        if(game.getCurrentPlayer().equals(myPiece))
-        {
-            Move move = new Move(from, to, p);
-            if(game.isLegalMove(move))
-            {
-                System.out.println("Arrow: " + p);
+        if(from == null || to == null){
+            return; 
+        }
+            Point x = from;
+            Point y = to; 
+            Move move = new Move(x,y);
+            if(x.equals(y)){
+                from = null;
                 
                 board[to.getRow()][to.getCol()].setSelected(false);
-                board[p.getRow()][p.getCol()].setPiece(Piece.ARROW);
-        
-                from = null;
                 to = null;
-            
-                client.send("move " + move.toString());
+                return; 
+            }
+            if(game.isLegalJump(move))
+        {
+            System.out.println("To: " + p);
+
+            board[to.getRow()][to.getCol()].setPiece(myPiece);
+            board[to.getRow()][to.getCol()].setSelected(false);
+            game.setPiece(board[to.getRow()][to.getCol()].getPiece(), to);
+
+            board[from.getRow()][from.getCol()].setPiece(null);
+            board[from.getRow()][from.getCol()].setSelected(false);
+            game.setPiece(null, from);
+            game.setPiece(null, game.getCapturedPiece(from,to));
+            Point c = game.getCapturedPiece(from,to);
+            board[c.getRow()][c.getCol()].setPiece(null);
+            //game.nextPlayer();
+            from = to;
+            //clickFrom(from);
+            LinkedList<Point> poss = game.getPossibleJumps(from);
+            boolean canJumpAgain = false;
+            if(poss.isEmpty()){
+                 game.nextPlayer();
+            myPiece=game.getCurrentPlayer();
+            from = null;
+            to= null; 
+            return; 
+            }
+            inner:
+            for(int i = 0; i < poss.size(); i++){
+                if(game.isLegalJump(new Move(from, poss.get(i)))){
+                    clickFrom(from);
+                    canJumpAgain = true; 
+                    break inner; 
+                }
+            }
+            if(canJumpAgain == false){
+                game.nextPlayer();
+            myPiece=game.getCurrentPlayer();
+             from = null; 
+             to = null; 
+             
             }
         }
+        if(game.isLegalMove(move)){
+            System.out.println("To: " + p);
+
+            board[to.getRow()][to.getCol()].setPiece(myPiece);
+            board[to.getRow()][to.getCol()].setSelected(false);
+            game.setPiece(board[to.getRow()][to.getCol()].getPiece(), to);
+
+            board[from.getRow()][from.getCol()].setPiece(null);
+            board[from.getRow()][from.getCol()].setSelected(false);
+            game.setPiece(null, from);
+            game.nextPlayer();
+            from = null;
+            to = null;
+            myPiece = game.getCurrentPlayer();
+             return; 
+        }
+        else{
+            // for(int r = 0; r < 8; r++){
+                // for(int c = 0; c < 8; c++){
+                    // if(board[r][c] == null){
+                        // continue;
+                    // }
+                    // board[r][c].setSelected(false);
+                // }
+            
+            // }
+            if(from != null){
+            board[from.getRow()][from.getCol()].setSelected(false);}
+            
+             from = null;
+             to = null; 
+             //board[to.getRow()][to.getCol()].setSelected(false);
+        }
+        
+        
     }
+    
+    
+    
+    
+    
 }

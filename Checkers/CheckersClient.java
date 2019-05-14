@@ -69,7 +69,6 @@ public class CheckersClient extends Client
 			
 			Piece movingPiece = game.getPiece(new Point(fromRow, fromCol));
 			game.move(new Point(fromRow, fromCol), new Point(toRow, toCol));
-			game.arrow(new Point(arrowRow, arrowCol));
 			game.nextPlayer();
 	
 			onMove(movingPiece, fromRow, fromCol, toRow, toCol, arrowRow, arrowCol);

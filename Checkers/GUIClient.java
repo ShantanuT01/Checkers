@@ -29,7 +29,7 @@ public class GUIClient extends CheckersClient
 		
 		stage = new CheckersStage(this, getGame(), getMyPiece());
 		if(null == mayflower)
-			mayflower = new Mayflower("Amazons & Arrows", 800, 800, stage);
+			mayflower = new Mayflower("Amazons & Arrows", 605, 680, stage);
 		else
 			mayflower.setStage(stage);
 	}
