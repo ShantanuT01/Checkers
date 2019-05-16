@@ -1,0 +1,14 @@
+#BlueJ class context
+comment0.target=PieceActor
+comment1.params=row\ col
+comment1.target=PieceActor(int,\ int)
+comment2.params=
+comment2.target=void\ update()
+comment3.params=
+comment3.target=Piece\ getPiece()
+comment4.params=piece
+comment4.target=void\ setPiece(Piece)
+comment4.text=\n\ \ Change\ which\ piece\ this\ PieceActor\ is\ displaying\n\ \ \ \ \ \ null,\ Piece.BLACK,\ Piece.WHITE,\ Piece.ARROW\n
+comment5.params=selected
+comment5.target=void\ setSelected(boolean)
+numComments=6
