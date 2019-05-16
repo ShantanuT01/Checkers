@@ -1,5 +1,6 @@
 import mayflower.*;
 import java.util.*;
+import java.io.*;
 public class CheckersStage extends Stage
 {
     //INSTANCE VARIABLES
@@ -12,7 +13,9 @@ public class CheckersStage extends Stage
     private Point to;
     private Point lastPoint;
     private Text turn;
-
+    private int moveNumber = 1; 
+    private boolean gameover = false; 
+    private Move megaMove; 
     //CONSTRUCTORS
     public CheckersStage(CheckersClient client, Checkers game, Piece piece) 
     {
@@ -80,12 +83,28 @@ public class CheckersStage extends Stage
     //METHODS
     public void update()
     {
-        if(game.isGameOver())
+        if(game.getMoves(game.getCurrentPlayer()).size() == 0)
         {
             //display game over!
             turn.setText("Game Over!");
             Piece winner = game.getWinner();
+            if(gameover == false){
+                try{
+            PrintWriter writer = new PrintWriter("moves.txt", "UTF-8");
+            Queue<Move> white = game.getWhiteMoves();
+            Queue<Move> black = game.getBlackMoves();
+            //System.out.println(white.remove());
+            while(white.peek() != null && black.peek() != null){
+            writer.println("BLACK plays: " + black.remove()+ "| WHITE plays: " + white.remove());
             
+        }
+        gameover = true; 
+            writer.close();
+        }
+            catch(Exception e){
+                e.printStackTrace(); 
+            }
+        }
             if(winner == null)
             {
                 turn.setText("Tie Game!");
@@ -159,7 +178,7 @@ public class CheckersStage extends Stage
             System.out.println("From: " + p);
             board[p.getRow()][p.getCol()].setSelected(true);
         }
-       
+
         else{
             from = null; 
         }
@@ -188,7 +207,7 @@ public class CheckersStage extends Stage
             board[to.getRow()][to.getCol()].setPiece(board[from.getRow()][from.getCol()].getPiece());
             board[to.getRow()][to.getCol()].setSelected(false);
             game.setPiece(board[to.getRow()][to.getCol()].getPiece(), to);
-
+            Point lastfrom = from; 
             board[from.getRow()][from.getCol()].setPiece(null);
             board[from.getRow()][from.getCol()].setSelected(false);
             game.setPiece(null, from);
@@ -197,17 +216,21 @@ public class CheckersStage extends Stage
             board[c.getRow()][c.getCol()].setPiece(null);
             lastPoint = to; 
             from = to;
+            
 
             LinkedList<Point> poss = game.getPossibleJumps(from);
             boolean canJumpAgain = false;
             game.kingMe(from);
             board[from.getRow()][from.getCol()].setPiece(game.getPiece(from));
             if(poss.isEmpty()){
+                game.recordMove(0, move, game.getCurrentPlayer());
                 game.nextPlayer();
                 myPiece=game.getCurrentPlayer();
                 from = null;
                 to= null; 
-                nJump = false; 
+                nJump = false;
+                
+
                 return; 
             }
             inner:
@@ -216,16 +239,29 @@ public class CheckersStage extends Stage
                     clickFrom(from);
                     canJumpAgain = true; 
                     nJump = true; 
+                    megaMove = new Move(lastfrom);
                     break inner; 
                 }
             }
+            
+                if(megaMove == null){
+               megaMove = new Move(lastfrom);
+             }
+             else{
+                megaMove.setTo(to);
+                }
+            
             if(canJumpAgain == false){
+                Move copy = megaMove; 
+                game.recordMove(0, copy, game.getCurrentPlayer());
                 game.nextPlayer();
                 myPiece=game.getCurrentPlayer();
                 from = null; 
                 to = null; 
+                megaMove = null; 
                 nJump = false; 
             }
+            
         }
 
         if(game.isLegalMove(move)){
@@ -234,7 +270,7 @@ public class CheckersStage extends Stage
             board[to.getRow()][to.getCol()].setPiece(game.getPiece(from));
             board[to.getRow()][to.getCol()].setSelected(false);
             game.setPiece(board[to.getRow()][to.getCol()].getPiece(), to);
-
+            game.recordMove(++moveNumber, move, game.getCurrentPlayer());
             board[from.getRow()][from.getCol()].setPiece(null);
             board[from.getRow()][from.getCol()].setSelected(false);
             game.setPiece(null, from);
@@ -256,6 +292,5 @@ public class CheckersStage extends Stage
             //board[to.getRow()][to.getCol()].setSelected(false);
         }
 
-    
     }
 }

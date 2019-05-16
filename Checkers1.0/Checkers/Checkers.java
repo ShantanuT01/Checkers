@@ -8,6 +8,8 @@ public class Checkers implements ICheckers
     private Piece currentPlayer;
     private int blackPieces = 12;
     private int whitePieces = 12; 
+   Queue<Move> whiteMoves = new LinkedList<Move>();
+   Queue<Move> blackMoves = new LinkedList<Move>();
     //CONSTRUCTORS
     public Checkers()
     {
@@ -202,15 +204,16 @@ public class Checkers implements ICheckers
 
             return true; 
         }
-        if((!hasMoves(Piece.WHITE) && getMoves(Piece.WHITE).isEmpty()) || (!hasMoves(Piece.BLACK)&& getMoves(Piece.BLACK).isEmpty())){
-            System.out.println("i am here");
+        Piece current = getCurrentPlayer(); 
+        if(this.getMoves(current).size() == 0){
+           
             return true; 
         }
         return false; 
     }
 
     public Piece getWinner(){
-        if(!isGameOver()){return null; }
+        
         if(whitePieces == 0){
             return Piece.BLACK;
         } 
@@ -221,7 +224,7 @@ public class Checkers implements ICheckers
             return null;
         }
         else if(hasMoves(Piece.WHITE) && !hasMoves(Piece.BLACK)){
-            System.out.println("correct");
+            
             return Piece.WHITE; 
         }
         else if(!hasMoves(Piece.WHITE) && hasMoves(Piece.BLACK)){
@@ -430,59 +433,31 @@ public class Checkers implements ICheckers
            int row = start.getRow();
            int col = start.getCol();
            moves.add(new Move(start, new Point(row+1, col+1)));
-           moves.add(new Move(start, new Point(row+1, col+1)));
+           moves.add(new Move(start, new Point(row+1, col-1)));
+            moves.add(new Move(start, new Point(row+2, col-2)));
+           moves.add(new Move(start, new Point(row+2, col+2)));
         }
         else if(getPiece(start) == Piece.BLACK){
-            int wrow = start.getRow()-1;
-            int col1 = start.getCol()+1;
-            int col2 = start.getCol()-1;
-            int crow = start.getRow()-2;
-            int ccol = start.getCol()+2;
-            int ccol1 = start.getCol()+2; 
-            Point a = new Point(wrow,col1);
-            Point b = new Point(wrow,col2);
-            Point x = new Point(crow, ccol);
-            Point y = new Point(crow, ccol1);
-            Move cx = new Move(start, x);
-            Move cy = new Move(start, y);
-            Move am = new Move(start, a);
-            Move bm = new Move(start, b);
-            moves.add(am);
-            moves.add(bm);
-            moves.add(cx);
-            moves.add(cy);
+           
+            int row = start.getRow();
+            int col = start.getCol(); 
+            moves.add(new Move(start, new Point(row-1, col+1)));
+           moves.add(new Move(start, new Point(row-1, col-1)));
+            moves.add(new Move(start, new Point(row-2, col-2)));
+           moves.add(new Move(start, new Point(row-2, col+2)));
         }
         else if(getPiece(start) == Piece.WHITEKING || getPiece(start) == Piece.BLACKKING){
-            int wrow = start.getRow()+1;
-            int col1 = start.getCol()+1;
-            int col2 = start.getCol()-1;
-            int wrow2 = start.getRow()-1;
-            int wrow3 = start.getRow()+1;
-            int ccol14 = start.getCol()+1;
-            int ccol2 = start.getCol()-1;
-            int wrow4 = start.getRow()-1;
-            Point a = new Point(wrow,col1);
-            Point b = new Point(wrow,col2);
-            Point c = new Point(wrow2,col1);
-            Point d = new Point(wrow2,col2);
-            Move am = new Move(start, a);
-            Move bm = new Move(start, b);
-            Move cm = new Move(start, c);
-            Move dm = new Move(start, d);
-
-            Move em = new Move(start, new Point(start.getRow()+2, start.getCol()+2));
-            Move fm = new Move(start, new Point(start.getRow()+2, start.getCol()-2));
-            Move gm = new Move(start, new Point(start.getRow()-2, start.getCol()+2));
-            Move hm = new Move(start, new Point(start.getRow()-2, start.getCol()-2));
-
-            moves.add(am);
-            moves.add(bm);
-            moves.add(cm);
-            moves.add(dm);
-            moves.add(em);
-            moves.add(fm);
-            moves.add(gm);
-            moves.add(hm);
+            
+            int row = start.getRow();
+            int col = start.getCol();
+            moves.add(new Move(start, new Point(row-1, col+1)));
+           moves.add(new Move(start, new Point(row-1, col-1)));
+            moves.add(new Move(start, new Point(row-2, col-2)));
+           moves.add(new Move(start, new Point(row-2, col+2)));
+            moves.add(new Move(start, new Point(row+1, col+1)));
+           moves.add(new Move(start, new Point(row+1, col-1)));
+            moves.add(new Move(start, new Point(row+2, col-2)));
+           moves.add(new Move(start, new Point(row+2, col+2)));
         }
 
         return moves; 
@@ -492,5 +467,19 @@ public class Checkers implements ICheckers
         boolean jumpy = isLegalJump(move);
         boolean movey = isLegalMove(move);
         return jumpy || movey; 
+    }
+    public void recordMove(int num ,Move move, Piece side){
+        if(side == Piece.WHITE){
+            whiteMoves.add(move);
+        }
+        else{
+            blackMoves.add(move);
+        }
+    }
+    public Queue<Move> getWhiteMoves(){
+        return whiteMoves; 
+    }
+    public Queue<Move> getBlackMoves(){
+        return blackMoves; 
     }
 }
