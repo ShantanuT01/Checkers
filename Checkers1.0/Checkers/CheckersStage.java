@@ -193,9 +193,10 @@ public class CheckersStage extends Stage
         Point x = from;
         Point y = to; 
         Move move = new Move(x,y);
+        megaMove = new Move(move.getPiece());
         if(x.equals(y)){
             from = null;
-
+            megaMove = null; 
             board[to.getRow()][to.getCol()].setSelected(false);
             to = null;
             return; 
@@ -203,7 +204,8 @@ public class CheckersStage extends Stage
         if(game.isLegalJump(move))
         {
             System.out.println("To: " + p);
-
+            megaMove.setFrom(move.getPiece());
+            megaMove.setTo(move.getDestination());
             board[to.getRow()][to.getCol()].setPiece(board[from.getRow()][from.getCol()].getPiece());
             board[to.getRow()][to.getCol()].setSelected(false);
             game.setPiece(board[to.getRow()][to.getCol()].getPiece(), to);
@@ -286,7 +288,7 @@ public class CheckersStage extends Stage
 
             if(from != null){
                 board[from.getRow()][from.getCol()].setSelected(false);}
-
+                megaMove = null; 
             from = null;
             to = null; 
             //board[to.getRow()][to.getCol()].setSelected(false);

@@ -15,7 +15,7 @@ public class Checkers implements ICheckers
     {
         //initialize instance variables
         currentPlayer = Piece.BLACK;
-        //zucc me
+        
         //setup the board to its initial state
         board = new Piece[8][8];
         board[0][1] = Piece.WHITE;

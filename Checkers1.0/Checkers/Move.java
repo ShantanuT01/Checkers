@@ -41,6 +41,11 @@ public class Move
     public void setTo(Point x){
         this.destination = x; 
     }
+    public void setFrom(Point x){
+        if(piece == null){
+            piece = x; 
+        }
+    }
     
     
     
