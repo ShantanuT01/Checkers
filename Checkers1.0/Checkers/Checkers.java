@@ -7,7 +7,7 @@ public class Checkers implements ICheckers
     private Piece[][] board;
     private Piece currentPlayer;
     private int blackPieces = 12;
-    private int whitePieces = 12; 
+    private int whitePieces = 12;
    Queue<Move> whiteMoves = new LinkedList<Move>();
    Queue<Move> blackMoves = new LinkedList<Move>();
     //CONSTRUCTORS
@@ -15,7 +15,7 @@ public class Checkers implements ICheckers
     {
         //initialize instance variables
         currentPlayer = Piece.BLACK;
-        
+
         //setup the board to its initial state
         board = new Piece[8][8];
         board[0][1] = Piece.WHITE;
@@ -44,7 +44,7 @@ public class Checkers implements ICheckers
         board[7][6] = Piece.BLACK;
     }
 
-    //METHODS       
+    //METHODS
     /**
      *  Return the current turn holder's Piece, Piece.BLACK or Piece.WHITE
      */
@@ -77,13 +77,13 @@ public class Checkers implements ICheckers
             setCurrentPlayer(Piece.WHITE);
         }
     }
-
+    //determines legal non-jumping moves
     public boolean isLegalMove(Move move){
         boolean a = board[move.getPiece().getRow()][move.getPiece().getCol()] != null;
         Point from = move.getPiece();
         Point to = move.getDestination();
         if(!isLegalPoint(from) || !isLegalPoint(to)){
-            return false; 
+            return false;
         }
         if(getPiece(from) == null){return false; }
         if(getPiece(to) != null){return false; }
@@ -91,7 +91,7 @@ public class Checkers implements ICheckers
             if(from.getRow() + 1 == to.getRow()){
                 if(checker(from.getCol(),to.getCol())){
 
-                    return true; 
+                    return true;
                 }
             }
 
@@ -100,7 +100,7 @@ public class Checkers implements ICheckers
             if(from.getRow() - 1 == to.getRow()){
                 if((from.getCol() + 1 == to.getCol()) || from.getCol() - 1 == to.getCol()){
 
-                    return true; 
+                    return true;
                 }
             }
 
@@ -108,15 +108,15 @@ public class Checkers implements ICheckers
         if(getPiece(from)==Piece.BLACKKING || getPiece(from)==Piece.WHITEKING){
             if(from.getRow() -1 == to.getRow() || from.getRow() +1 == to.getRow()){
                 if(from.getCol() +1 == to.getCol() || from.getCol() -1 == to.getCol()){
-                    return true; 
+                    return true;
                 }
 
             }
 
         }
-        return false; 
+        return false;
     }
-
+    //determines captured piece point
     public Point getCapturedPiece(Point from, Point to)
     {
 
@@ -125,13 +125,14 @@ public class Checkers implements ICheckers
         return new Point(row,col);
 
     }
+    //determines legality of jumping move
     public boolean isLegalJump(Move move)
     {
         Point from = move.getPiece();
         Point to = move.getDestination();
         Piece cap = getPiece(getCapturedPiece(from,to));
         if(isOfSameType(from,getCapturedPiece(from,to)) || cap == null){
-            return false; 
+            return false;
         }
         if(getPiece(from) == null)
         {
@@ -145,7 +146,7 @@ public class Checkers implements ICheckers
             if(from.getRow() + 2 == to.getRow()){
                 if(from.getCol() + 2 == to.getCol() || from.getCol() - 2 == to.getCol()){
 
-                    return true; 
+                    return true;
                 }
             }
 
@@ -154,7 +155,7 @@ public class Checkers implements ICheckers
             if(from.getRow() - 2 == to.getRow()){
                 if((from.getCol() + 2 == to.getCol()) || from.getCol() - 2 == to.getCol()){
 
-                    return true; 
+                    return true;
                 }
             }
 
@@ -162,18 +163,18 @@ public class Checkers implements ICheckers
         if(getPiece(from)==Piece.BLACKKING || getPiece(from)==Piece.WHITEKING){
             if(from.getRow() -2 == to.getRow() || from.getRow() +2 == to.getRow()){
                 if(from.getCol() +2 == to.getCol() || from.getCol() -2 == to.getCol()){
-                    return true; 
+                    return true;
                 }
 
             }
 
         }
-        return false; 
+        return false;
     }
 
     /**
      *  Return the piece that is on the board at the specified Point
-     *      Piece.BLACK, Piece.WHITE, or Piece.ARROW
+     *      Piece.BLACK, Piece.WHITE
      */
     public Piece getPiece(Point p)
     {
@@ -202,35 +203,35 @@ public class Checkers implements ICheckers
     public boolean isGameOver(){
         if(whitePieces == 0 || blackPieces == 0){
 
-            return true; 
+            return true;
         }
-        Piece current = getCurrentPlayer(); 
+        Piece current = getCurrentPlayer();
         if(this.getMoves(current).size() == 0){
-           
-            return true; 
+
+            return true;
         }
-        return false; 
+        return false;
     }
 
     public Piece getWinner(){
-        
+
         if(whitePieces == 0){
             return Piece.BLACK;
-        } 
+        }
         else if(blackPieces == 0){
-            return Piece.WHITE; 
+            return Piece.WHITE;
         }
         else if(!hasMoves(Piece.WHITE) && !hasMoves(Piece.BLACK)){
             return null;
         }
         else if(hasMoves(Piece.WHITE) && !hasMoves(Piece.BLACK)){
-            
-            return Piece.WHITE; 
+
+            return Piece.WHITE;
         }
         else if(!hasMoves(Piece.WHITE) && hasMoves(Piece.BLACK)){
             return Piece.BLACK;
         }
-        return null; 
+        return null;
     }
 
     /**
@@ -244,7 +245,7 @@ public class Checkers implements ICheckers
         else if(getPiece(from).equals(currentPlayer)){
             Piece moved = board[from.getRow()][from.getCol()];
             setPiece(moved, to);
-            board[from.getRow()][from.getCol()] = null; 
+            board[from.getRow()][from.getCol()] = null;
             nextPlayer();
 
         }
@@ -277,15 +278,8 @@ public class Checkers implements ICheckers
         return list;
     }
 
-    /**
-     *  Return a new instance of an Amazons object with the same state as *this* object
-     *  The copy should contain all the same Pieces in all the same places and the same currentPlayer
-     */
-    public Checkers copy()
-    {
-        return null;
-    }
 
+    //returns if side has moves
     public boolean hasMoves(Piece side){
 
         List<Point> coords = getPieces(side);
@@ -299,10 +293,10 @@ public class Checkers implements ICheckers
             }
         }
 
-        return poss.size() > 0; 
+        return poss.size() > 0;
 
     }
-
+    //gets legal moves of side
     public LinkedList<Move> getMoves(Piece side){
 
         List<Point> coords = getPieces(side);
@@ -316,12 +310,12 @@ public class Checkers implements ICheckers
             }
         }
 
-        return poss;  
+        return poss;
 
     }
-
+    //private helper method for +- 1 range
     private boolean checker(int a, int b){
-        return a+1 == b || a-1 == b; 
+        return a+1 == b || a-1 == b;
     }
 
     public LinkedList<Point> getPossibleJumps(Point from){
@@ -353,17 +347,17 @@ public class Checkers implements ICheckers
                 points.remove(points.get(i));
             }
         }
-        return points; 
+        return points;
     }
-
+    //checks to make sure the row-column coordinates are within the 8x8 grid
     public boolean isLegalPoint(Point x){
         int row = x.getRow();
         int col = x.getCol();
         boolean r = row >=0 && row <=7;
         boolean c = col >= 0 && col <=7;
-        return r && c; 
+        return r && c;
     }
-
+    //kings a piece
     public void kingMe(Point x){
         if(getPiece(x) == Piece.WHITE){
             if(x.getRow() == 7){
@@ -377,7 +371,7 @@ public class Checkers implements ICheckers
             }
         }
     }
-
+    //returns true if piece is on the same side of current player
     public boolean isValidPieceToMove(Point x){
         Piece curr = getCurrentPlayer();
         if(curr == Piece.WHITE){
@@ -386,23 +380,23 @@ public class Checkers implements ICheckers
         else if(curr == Piece.BLACK){
             return getPiece(x)==Piece.BLACK || getPiece(x) == Piece.BLACKKING;
         }
-        return false; 
+        return false;
     }
-
+    //checks to see if two pieces are on the same side given two points
     public boolean isOfSameType(Point x, Point y){
         if(getPiece(x) == Piece.WHITE ||getPiece(x) == Piece.WHITEKING ){
-            return getPiece(y) == Piece.WHITE ||  getPiece(y) == Piece.WHITEKING; 
+            return getPiece(y) == Piece.WHITE ||  getPiece(y) == Piece.WHITEKING;
         }
         else if(getPiece(x) == Piece.BLACK ||getPiece(x) == Piece.BLACKKING ){
 
-            return getPiece(y) == Piece.BLACK ||getPiece(y) == Piece.BLACKKING; 
+            return getPiece(y) == Piece.BLACK ||getPiece(y) == Piece.BLACKKING;
         }
-        return false; 
+        return false;
     }
-
+    //checks to see if two pieces are the same given the pieces but no points
     public boolean isOfSameType(Piece a, Piece b){
         if(a==null || b == null){
-            return false; 
+            return false;
         }
         if(a==b){
             return true;
@@ -414,19 +408,19 @@ public class Checkers implements ICheckers
             return name.substring(0,5).equals(name2.substring(0,5));
         }
     }
-
+    //returns side of piece
     public Piece getSide(Piece p){
         if(p == Piece.WHITE || p == Piece.WHITEKING){
             return Piece.WHITE;
         }
         else if(p == Piece.BLACK || p == Piece.BLACKKING){
-            return Piece.BLACK; 
+            return Piece.BLACK;
         }
         else{
-            return null; 
+            return null;
         }
     }
-
+    //returns possible moves of piece at point start
     public LinkedList<Move> getPossibleMoves(Point start){
         LinkedList<Move> moves = new LinkedList<>();
         if(getPiece(start) == Piece.WHITE){
@@ -438,16 +432,16 @@ public class Checkers implements ICheckers
            moves.add(new Move(start, new Point(row+2, col+2)));
         }
         else if(getPiece(start) == Piece.BLACK){
-           
+
             int row = start.getRow();
-            int col = start.getCol(); 
+            int col = start.getCol();
             moves.add(new Move(start, new Point(row-1, col+1)));
            moves.add(new Move(start, new Point(row-1, col-1)));
             moves.add(new Move(start, new Point(row-2, col-2)));
            moves.add(new Move(start, new Point(row-2, col+2)));
         }
         else if(getPiece(start) == Piece.WHITEKING || getPiece(start) == Piece.BLACKKING){
-            
+
             int row = start.getRow();
             int col = start.getCol();
             moves.add(new Move(start, new Point(row-1, col+1)));
@@ -460,14 +454,15 @@ public class Checkers implements ICheckers
            moves.add(new Move(start, new Point(row+2, col+2)));
         }
 
-        return moves; 
+        return moves;
     }
-
+//checks to see if move is valid
     public boolean isValidMove(Move move){
         boolean jumpy = isLegalJump(move);
         boolean movey = isLegalMove(move);
-        return jumpy || movey; 
+        return jumpy || movey;
     }
+    //records move
     public void recordMove(int num ,Move move, Piece side){
         if(side == Piece.WHITE){
             whiteMoves.add(move);
@@ -477,9 +472,26 @@ public class Checkers implements ICheckers
         }
     }
     public Queue<Move> getWhiteMoves(){
-        return whiteMoves; 
+        return whiteMoves;
     }
     public Queue<Move> getBlackMoves(){
-        return blackMoves; 
+        return blackMoves;
+    }
+    public boolean hasJumps(){
+        List<Point> points = this.getPieces(getCurrentPlayer());
+        HashMap<Point, LinkedList<Point>> map = new HashMap<>();
+        for(Point point: points){
+            map.put(point, this.getPossibleJumps(point));
+        }
+        for(Point key: map.keySet()){
+            LinkedList<Point> jumps = map.get(key);
+            for(int i = 0; i < jumps.size(); i++){
+                Move jump = new Move(key, jumps.get(i));
+                if(isLegalJump(jump)){
+                    return true; 
+                }
+            }
+        }
+        return false; 
     }
 }

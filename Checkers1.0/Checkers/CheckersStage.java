@@ -8,16 +8,16 @@ public class CheckersStage extends Stage
     private CheckersClient client;
     private PieceActor[][] board;
     private Piece myPiece;
-    private boolean nJump = false; 
+    private boolean nJump = false;
     private Point from;
     private Point to;
     private Point lastPoint;
     private Text turn;
-    private int moveNumber = 1; 
-    private boolean gameover = false; 
-    private Move megaMove; 
+    private int moveNumber = 1;
+    private boolean gameover = false;
+    private Move megaMove;
     //CONSTRUCTORS
-    public CheckersStage(CheckersClient client, Checkers game, Piece piece) 
+    public CheckersStage(CheckersClient client, Checkers game, Piece piece)
     {
         //initialize instance variables
         this.game = game;
@@ -41,7 +41,7 @@ public class CheckersStage extends Stage
 
         setBackground("img/background.png");
 
-        //Display your color            
+        //Display your color
         turn = new Text("");
         addActor(turn, 5, 610);
 
@@ -49,12 +49,12 @@ public class CheckersStage extends Stage
         //addActor(button, 400, 600);
     }
 
-    public CheckersStage(Checkers game, Piece piece) 
+    public CheckersStage(Checkers game, Piece piece)
     {
         //initialize instance variables
         this.game = game;
 
-        this.myPiece = piece; 
+        this.myPiece = piece;
 
         int w = 75;
         int h = 75;
@@ -73,7 +73,7 @@ public class CheckersStage extends Stage
 
         setBackground("img/background.png");
 
-        //Display your color            
+        //Display your color
         turn = new Text("");
         addActor(turn, 5, 610);
 
@@ -83,6 +83,7 @@ public class CheckersStage extends Stage
     //METHODS
     public void update()
     {
+      //modifies text file with all moves
         if(game.getMoves(game.getCurrentPlayer()).size() == 0)
         {
             //display game over!
@@ -96,13 +97,13 @@ public class CheckersStage extends Stage
             //System.out.println(white.remove());
             while(white.peek() != null && black.peek() != null){
             writer.println("BLACK plays: " + black.remove()+ "| WHITE plays: " + white.remove());
-            
+
         }
-        gameover = true; 
+        gameover = true;
             writer.close();
         }
             catch(Exception e){
-                e.printStackTrace(); 
+                e.printStackTrace();
             }
         }
             if(winner == null)
@@ -132,7 +133,7 @@ public class CheckersStage extends Stage
             }
         }
 
-    }   
+    }
 
     /**
      *  Change the piece located a specified Point
@@ -168,10 +169,10 @@ public class CheckersStage extends Stage
     }
 
     private void clickFrom(Point p)
-    {   
+    {
         from = p;
         if(nJump){
-            from = lastPoint; 
+            from = lastPoint;
             board[from.getRow()][from.getCol()].setSelected(true);
         }
         else if(game.isValidPieceToMove(p)){
@@ -180,7 +181,7 @@ public class CheckersStage extends Stage
         }
 
         else{
-            from = null; 
+            from = null;
         }
     }
 
@@ -188,18 +189,18 @@ public class CheckersStage extends Stage
     {
         to = p;
         if(from == null || to == null){
-            return; 
+            return;
         }
         Point x = from;
-        Point y = to; 
+        Point y = to;
         Move move = new Move(x,y);
         megaMove = new Move(move.getPiece());
         if(x.equals(y)){
             from = null;
-            megaMove = null; 
+            megaMove = null;
             board[to.getRow()][to.getCol()].setSelected(false);
             to = null;
-            return; 
+            return;
         }
         if(game.isLegalJump(move))
         {
@@ -209,64 +210,64 @@ public class CheckersStage extends Stage
             board[to.getRow()][to.getCol()].setPiece(board[from.getRow()][from.getCol()].getPiece());
             board[to.getRow()][to.getCol()].setSelected(false);
             game.setPiece(board[to.getRow()][to.getCol()].getPiece(), to);
-            Point lastfrom = from; 
+            Point lastfrom = from;
             board[from.getRow()][from.getCol()].setPiece(null);
             board[from.getRow()][from.getCol()].setSelected(false);
             game.setPiece(null, from);
             game.setPiece(null, game.getCapturedPiece(from,to));
             Point c = game.getCapturedPiece(from,to);
             board[c.getRow()][c.getCol()].setPiece(null);
-            lastPoint = to; 
+            lastPoint = to;
             from = to;
-            
 
-            LinkedList<Point> poss = game.getPossibleJumps(from);
-            boolean canJumpAgain = false;
             game.kingMe(from);
             board[from.getRow()][from.getCol()].setPiece(game.getPiece(from));
+            LinkedList<Point> poss = game.getPossibleJumps(from);
+            boolean canJumpAgain = false;
+
             if(poss.isEmpty()){
                 game.recordMove(0, move, game.getCurrentPlayer());
                 game.nextPlayer();
                 myPiece=game.getCurrentPlayer();
                 from = null;
-                to= null; 
+                to= null;
                 nJump = false;
-                
 
-                return; 
+
+                return;
             }
             inner:
             for(int i = 0; i < poss.size(); i++){
                 if(game.isLegalJump(new Move(from, poss.get(i)))){
                     clickFrom(from);
-                    canJumpAgain = true; 
-                    nJump = true; 
+                    canJumpAgain = true;
+                    nJump = true;
                     megaMove = new Move(lastfrom);
-                    break inner; 
+                    break inner;
                 }
             }
-            
+
                 if(megaMove == null){
                megaMove = new Move(lastfrom);
              }
              else{
                 megaMove.setTo(to);
                 }
-            
+
             if(canJumpAgain == false){
-                Move copy = megaMove; 
+                Move copy = megaMove;
                 game.recordMove(0, copy, game.getCurrentPlayer());
                 game.nextPlayer();
                 myPiece=game.getCurrentPlayer();
-                from = null; 
-                to = null; 
-                megaMove = null; 
-                nJump = false; 
+                from = null;
+                to = null;
+                megaMove = null;
+                nJump = false;
             }
-            
+
         }
 
-        if(game.isLegalMove(move)){
+        if(game.isLegalMove(move) && !game.hasJumps()){
             System.out.println("To: " + p);
 
             board[to.getRow()][to.getCol()].setPiece(game.getPiece(from));
@@ -282,15 +283,15 @@ public class CheckersStage extends Stage
             from = null;
             to = null;
             myPiece = game.getCurrentPlayer();
-            return; 
+            return;
         }
         else{
 
             if(from != null){
                 board[from.getRow()][from.getCol()].setSelected(false);}
-                megaMove = null; 
+                megaMove = null;
             from = null;
-            to = null; 
+            to = null;
             //board[to.getRow()][to.getCol()].setSelected(false);
         }
 

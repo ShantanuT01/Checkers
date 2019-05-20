@@ -1,13 +1,13 @@
 import java.util.List;
 
-public interface ICheckers 
+public interface ICheckers
 {
 
     /**
      *	Return a new instance of an Amazons object with the same state as *this* object
      *	The copy should contain all the same Pieces in all the same places and the same currentPlayer
      */
-    public Checkers copy();
+
 
     /**
      *	Return the current turn holder's Piece, Piece.BLACK or Piece.WHITE
